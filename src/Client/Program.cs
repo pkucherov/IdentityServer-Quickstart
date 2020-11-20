@@ -1,4 +1,6 @@
-﻿using IdentityModel.Client;
+﻿using IdentityModel;
+using IdentityModel.Client;
+using IdentityServer4.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;

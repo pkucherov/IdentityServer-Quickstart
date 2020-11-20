@@ -20,17 +20,31 @@ namespace IdentityServer
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("api1", "My API")
+                new ApiScope("api1", "My API") {  
+                }
+                
             };
+        /*
+        public static IEnumerable<ApiResource> Apis =>
+        new List<ApiResource>
+        {
+                    new ApiResource("api1", "My API")
+                    {
+                       Scopes = { "api1"}
+                    }
 
-
+        };
+        */
         public static IEnumerable<ApiResource> GetApis()
         {
             return new[]
             {
         // simple API with a single scope (in this case the scope name is the same as the api name)
-        new ApiResource("api1", "Some API 1"),
-        /*
+        new ApiResource("api1", "My API")
+        {
+            Scopes = { "api1" }
+        },
+        
         // expanded version if more control is needed
         new ApiResource
         {
@@ -45,8 +59,9 @@ namespace IdentityServer
             // include the following using claims in access token (in addition to subject id)
             UserClaims = { JwtClaimTypes.Name, JwtClaimTypes.Email },
 
-            
+            Scopes = new string[] { "api2scope"}
             // this API defines two scopes
+            /*
             Scopes =
             {
                 new Scope()
@@ -60,8 +75,8 @@ namespace IdentityServer
                     DisplayName = "Read only access to API 2"
                 }
             }
-            
-        }*/
+            */
+        }
           };
         }
 
@@ -95,7 +110,7 @@ namespace IdentityServer
             // secret for authentication
             ClientSecrets =
             {
-                new Secret("secret11")
+                new Secret("secret11".Sha256())
             },
 
             // scopes that client has access to

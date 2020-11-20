@@ -89,7 +89,8 @@ namespace Api
             {
                 options.Authority = "https://localhost:5001";
                 options.RequireHttpsMetadata = false;
-                options.Audience = "https://localhost:5001/resources";//"api1";
+                //options.Audience = "https://localhost:5001/resources";//"api1";
+                options.Audience = "api1";
             });
         }
 
