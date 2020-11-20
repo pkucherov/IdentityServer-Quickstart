@@ -9,6 +9,7 @@ namespace Api.Controllers
 {
     [Route("identity")]
     [Authorize]
+    [ApiController]
     public class IdentityController : ControllerBase
     {
         [HttpGet]
