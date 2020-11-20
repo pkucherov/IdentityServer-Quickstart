@@ -5,6 +5,7 @@
 using IdentityModel;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using IdentityServer4.Test;
 
 namespace IdentityServer
 {
@@ -20,9 +21,9 @@ namespace IdentityServer
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("api1", "My API") {  
+                new ApiScope("api1", "My API") {
                 }
-                
+
             };
         /*
         public static IEnumerable<ApiResource> Apis =>
@@ -82,41 +83,72 @@ namespace IdentityServer
 
         public static IEnumerable<Client> Clients =>
             new List<Client>
-    {
-        new Client
         {
-            ClientId = "client",
-
-            // no interactive user, use the clientid/secret for authentication
-            AllowedGrantTypes = GrantTypes.ClientCredentials,
-
-            // secret for authentication
-            ClientSecrets =
+            new Client
             {
-                new Secret("secret".Sha256())
+                ClientId = "client",
+
+                // no interactive user, use the clientid/secret for authentication
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                // secret for authentication
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },
+
+                // scopes that client has access to
+                AllowedScopes = { "api1" }
+            },
+            //AccessTokenType.Reference
+            new Client
+            {
+                ClientId = "client11",
+
+                // no interactive user, use the clientid/secret for authentication
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                // secret for authentication
+                ClientSecrets =
+                {
+                    new Secret("secret11".Sha256())
+                },
+
+                // scopes that client has access to
+                AllowedScopes = { "api1" },
+                AccessTokenType = AccessTokenType.Reference
             },
 
-            // scopes that client has access to
-            AllowedScopes = { "api1" }
-        },
-        //AccessTokenType.Reference
-        new Client
+              new Client
+                {
+                    ClientId = "ro.client",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedScopes = { "api1" }
+                }
+        };
+
+        public static List<TestUser> GetUsers()
         {
-            ClientId = "client11",
-
-            // no interactive user, use the clientid/secret for authentication
-            AllowedGrantTypes = GrantTypes.ClientCredentials,
-
-            // secret for authentication
-            ClientSecrets =
+            return new List<TestUser>
             {
-                new Secret("secret11".Sha256())
-            },
-
-            // scopes that client has access to
-            AllowedScopes = { "api1" },
-            AccessTokenType = AccessTokenType.Reference
-        },
-    };
+                new TestUser
+                {
+                    SubjectId = "1",
+                    Username = "alice",
+                    Password = "password"
+                },
+                new TestUser
+                {
+                    SubjectId = "2",
+                    Username = "bob",
+                    Password = "password"
+                }
+            };
+        }
     }
 }

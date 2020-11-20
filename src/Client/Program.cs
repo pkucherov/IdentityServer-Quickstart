@@ -22,7 +22,7 @@ namespace Client
                 Console.WriteLine(disco.Error);
                 return;
             }
-           // client.AccessTokenType = AccessTokenType.Reference;
+            // client.AccessTokenType = AccessTokenType.Reference;
             // request token
             var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
@@ -50,34 +50,32 @@ namespace Client
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseAddress + "/identity");
             request.Headers.Add("Authorization", new List<string>() { "Bearer " + accessToken });
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            var resp =  await client.SendAsync(request);
-        
+            var resp = await client.SendAsync(request);
 
-        var identityGet = await client.GetStringAsync(baseAddress + "/identity");
+
+            var identityGet = await client.GetStringAsync(baseAddress + "/identity");
             Console.WriteLine($"GET: {identityGet}");
 
-        }
 
-        /*
-        static async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
-        {
-            var authorizationHeader = _httpContextAccesor.HttpContext
-                .Request.Headers["Authorization"];
 
-            if (!string.IsNullOrEmpty(authorizationHeader))
+            var tokenResponse2 = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
-                request.Headers.Add("Authorization", new List<string>() { authorizationHeader });
+                Address = disco.TokenEndpoint,
+                Password = "password",
+                UserName = "alice",
+                Scope = "api1",
+                ClientId = "ro.client",
+                ClientSecret ="secret"
+            });
+
+            if (tokenResponse2.IsError)
+            {
+                Console.WriteLine(tokenResponse2.Error);
+                return;
             }
 
-            var token = await GetToken();
-
-            if (token != null)
-            {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            return await base.SendAsync(request);
+            Console.WriteLine(tokenResponse2.Json);
+            Console.WriteLine("\n\n");
         }
-        */
     }
 }
