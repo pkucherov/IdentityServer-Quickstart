@@ -22,60 +22,121 @@ namespace Client
                 Console.WriteLine(disco.Error);
                 return;
             }
+            /*
             // client.AccessTokenType = AccessTokenType.Reference;
             // request token
-            var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
-                Address = disco.TokenEndpoint,
+                var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                {
+                    Address = disco.TokenEndpoint,
 
-                ClientId = "client",
-                ClientSecret = "secret",
-                Scope = "api1"
-            });
+                    ClientId = "client",
+                    ClientSecret = "secret",
+                    Scope = "api1"
+                });
 
-            if (tokenResponse.IsError)
-            {
-                Console.WriteLine(tokenResponse.Error);
-                return;
+                if (tokenResponse.IsError)
+                {
+                    Console.WriteLine(tokenResponse.Error);
+                    return;
+                }
+
+                Console.WriteLine(tokenResponse.Json);
+                //setRequestHeader("Authorization", "Bearer " + user.access_token);
+                var accessToken = tokenResponse.Json["access_token"].ToString();
+                // WeatherForecast
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                var weatherGet = await client.GetStringAsync(baseAddress + "/WeatherForecast");
+
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseAddress + "/identity");
+                request.Headers.Add("Authorization", new List<string>() { "Bearer " + accessToken });
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                var resp = await client.SendAsync(request);
+
+
+                var identityGet = await client.GetStringAsync(baseAddress + "/identity");
+                Console.WriteLine($"GET: {identityGet}");
+
             }
 
-            Console.WriteLine(tokenResponse.Json);
-            //setRequestHeader("Authorization", "Bearer " + user.access_token);
-            var accessToken = tokenResponse.Json["access_token"].ToString();
-            // WeatherForecast
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-            var weatherGet = await client.GetStringAsync(baseAddress + "/WeatherForecast");
-
-
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseAddress + "/identity");
-            request.Headers.Add("Authorization", new List<string>() { "Bearer " + accessToken });
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            var resp = await client.SendAsync(request);
-
-
-            var identityGet = await client.GetStringAsync(baseAddress + "/identity");
-            Console.WriteLine($"GET: {identityGet}");
-
-
-
-            var tokenResponse2 = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
-                Address = disco.TokenEndpoint,
-                Password = "password",
-                UserName = "alice",
-                Scope = "api1",
-                ClientId = "ro.client",
-                ClientSecret ="secret"
-            });
 
-            if (tokenResponse2.IsError)
-            {
-                Console.WriteLine(tokenResponse2.Error);
-                return;
+                var tokenResponse2 = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
+                {
+                    Address = disco.TokenEndpoint,
+                    Password = "password",
+                    UserName = "alice",
+                    Scope = "api1",
+                    ClientId = "ro.client",
+                    ClientSecret = "secret"
+                });
+
+                if (tokenResponse2.IsError)
+                {
+                    Console.WriteLine(tokenResponse2.Error);
+                    return;
+                }
+
+                Console.WriteLine(tokenResponse2.Json);
+                Console.WriteLine("\n\n");
+
             }
+            {
+                var tokenResponse3 = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                {
+                    Address = disco.TokenEndpoint,
 
-            Console.WriteLine(tokenResponse2.Json);
-            Console.WriteLine("\n\n");
+                    ClientId = "client11",
+                    ClientSecret = "secret11",
+                    Scope = "api1"
+                });
+
+                if (tokenResponse3.IsError)
+                {
+                    Console.WriteLine(tokenResponse3.Error);
+                    return;
+                }
+
+                Console.WriteLine(tokenResponse3.Json);
+            }
+            */
+            {
+                //reference token
+                var tokenResponse4 = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
+                {
+                    Address = disco.TokenEndpoint,
+                    Password = "password",
+                    UserName = "alice",
+                    Scope = "api1",
+                    ClientId = "ro.client2",
+                    ClientSecret = "secret"
+                });
+
+                if (tokenResponse4.IsError)
+                {
+                    Console.WriteLine(tokenResponse4.Error);
+                    return;
+                }
+
+                Console.WriteLine(tokenResponse4.Json);
+                Console.WriteLine("\n\n");
+
+                var accessToken4 = tokenResponse4.Json["access_token"].ToString();
+                // WeatherForecast
+                //       client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                var weatherGet4 = await client.GetStringAsync(baseAddress + "/WeatherForecast");
+
+
+                HttpRequestMessage request4 = new HttpRequestMessage(HttpMethod.Get, baseAddress + "/identity");
+                request4.Headers.Add("Authorization", new List<string>() { "Bearer " + accessToken4 });
+                request4.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken4);
+                var resp4 = await client.SendAsync(request4);
+
+
+                var identityGet4 = await client.GetStringAsync(baseAddress + "/identity");
+                Console.WriteLine($"GET: {identityGet4}");
+            }
         }
     }
 }

@@ -129,6 +129,19 @@ namespace IdentityServer
                         new Secret("secret".Sha256())
                     },
                     AllowedScopes = { "api1" }
+                },
+
+               new Client
+                {
+                    ClientId = "ro.client2",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedScopes = { "api1" },
+                    AccessTokenType = AccessTokenType.Reference
                 }
         };
 
