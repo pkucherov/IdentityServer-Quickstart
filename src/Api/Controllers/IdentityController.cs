@@ -15,6 +15,7 @@ namespace Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            var user = HttpContext?.User;
             return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
         }
     }
