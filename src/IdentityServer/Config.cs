@@ -157,7 +157,7 @@ namespace IdentityServer
             {
                 new TestUser
                 {
-                    SubjectId = "1",
+                    SubjectId = "Subject1",
                     Username = "alice",
                     Password = "password"
                 },

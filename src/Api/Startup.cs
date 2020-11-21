@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityModel.AspNetCore.AccessTokenValidation;
 using IdentityModel.AspNetCore.OAuth2Introspection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -34,34 +35,12 @@ namespace Api
 
             ConfigureAuthService(services);
             
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-            //{
-            //    options.Authority = "https://localhost:5001";
-
-            //    options.Audience = "api1";
-            //    /*
-            //    options.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateAudience = false
-            //    };
-            //    */
-            //});
-            ///*
-            //// reference tokens
-            //.AddOAuth2Introspection("introspection", options =>
-            //{
-            //    options.Authority = "https://localhost:5001";
-
-            //    options.ClientId = "resource1";
-            //    options.ClientSecret = "secret";
-            //});*/
-            ///*
+            //
             //services.AddSwaggerGen(c =>
             //{
             //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
             //});
-            //*/
+            //
             
             //services.AddAuthorization(options =>
             //{
@@ -71,31 +50,25 @@ namespace Api
             //        policy.RequireClaim("scope", "api1");
             //    });
             //});
-            
         }
 
         private void ConfigureAuthService(IServiceCollection services)
         {
             // prevent from mapping "sub" claim to nameidentifier.
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
-
-           /*
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(options =>
+           
+            services.AddAuthentication("token")
+            .AddJwtBearer("token", options =>
             {
                 options.Authority = "https://localhost:5001";
-                options.RequireHttpsMetadata = false;
-                //options.Audience = "https://localhost:5001/resources";//"api1";
                 options.Audience = "api1";
-            });
-            */
 
-            services.AddAuthentication(OAuth2IntrospectionDefaults.AuthenticationScheme)
-            .AddOAuth2Introspection(options =>
+                options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+
+                // if token does not contain a dot, it is a reference token
+                options.ForwardDefaultSelector = Selector.ForwardReferenceToken("introspection");
+            })
+            .AddOAuth2Introspection("introspection", options =>
             {
                 options.Authority = "https://localhost:5001";
 

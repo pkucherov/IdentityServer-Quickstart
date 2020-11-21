@@ -14,18 +14,22 @@ namespace Client
         {
             string baseAddress = "https://localhost:6001";
             Console.WriteLine("App Start");
+            DiscoveryDocumentResponse disco;
             // discover endpoints from metadata
-            var client = new HttpClient();
-            var disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
-            if (disco.IsError)
             {
-                Console.WriteLine(disco.Error);
-                return;
+                var client = new HttpClient();
+                disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
+                if (disco.IsError)
+                {
+                    Console.WriteLine(disco.Error);
+                    return;
+                }
             }
-            /*
+            
             // client.AccessTokenType = AccessTokenType.Reference;
             // request token
             {
+                var client = new HttpClient();
                 var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
                 {
                     Address = disco.TokenEndpoint,
@@ -61,7 +65,7 @@ namespace Client
             }
 
             {
-
+                var client = new HttpClient();
                 var tokenResponse2 = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
                 {
                     Address = disco.TokenEndpoint,
@@ -83,6 +87,7 @@ namespace Client
 
             }
             {
+                var client = new HttpClient();
                 var tokenResponse3 = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
                 {
                     Address = disco.TokenEndpoint,
@@ -100,10 +105,11 @@ namespace Client
 
                 Console.WriteLine(tokenResponse3.Json);
             }
-            */
+            
             {
+                var client4 = new HttpClient();
                 //reference token
-                var tokenResponse4 = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
+                var tokenResponse4 = await client4.RequestPasswordTokenAsync(new PasswordTokenRequest
                 {
                     Address = disco.TokenEndpoint,
                     Password = "password",
@@ -125,16 +131,16 @@ namespace Client
                 var accessToken4 = tokenResponse4.Json["access_token"].ToString();
                 // WeatherForecast
                 //       client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-                var weatherGet4 = await client.GetStringAsync(baseAddress + "/WeatherForecast");
+                var weatherGet4 = await client4.GetStringAsync(baseAddress + "/WeatherForecast");
 
 
                 HttpRequestMessage request4 = new HttpRequestMessage(HttpMethod.Get, baseAddress + "/identity");
                 request4.Headers.Add("Authorization", new List<string>() { "Bearer " + accessToken4 });
                 request4.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken4);
-                var resp4 = await client.SendAsync(request4);
+                var resp4 = await client4.SendAsync(request4);
 
-
-                var identityGet4 = await client.GetStringAsync(baseAddress + "/identity");
+                client4.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken4);
+                var identityGet4 = await client4.GetStringAsync(baseAddress + "/identity");
                 Console.WriteLine($"GET: {identityGet4}");
             }
         }
