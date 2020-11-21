@@ -4,8 +4,10 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace IdentityServer
 {
@@ -20,19 +22,25 @@ namespace IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // uncomment, if you want to add an MVC-based UI
-            //services.AddControllersWithViews();
+            const string connectionString = @"UserID=postgres;Password=postgres;Host=localhost;Port=5432;Database=pe_ident;";
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             var builder = services.AddIdentityServer(options =>
             {
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 //options.EmitStaticAudienceClaim = true;
             })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.Clients)
-                 .AddTestUsers(Config.GetUsers());
+                //.AddInMemoryIdentityResources(Config.IdentityResources)
+                //.AddInMemoryApiScopes(Config.ApiScopes)
+                //.AddInMemoryApiResources(Config.GetApis())
+                //.AddInMemoryClients(Config.Clients)
+                // .AddTestUsers(Config.GetUsers())
+                 .AddConfigurationStore(options =>
+                 {
+                     options.ConfigureDbContext = builder =>
+                         builder.UseNpgsql(connectionString,
+                             sql => sql.MigrationsAssembly(migrationsAssembly));
+                 });
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
