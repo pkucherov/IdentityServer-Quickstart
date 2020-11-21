@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityModel.AspNetCore.OAuth2Introspection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -78,8 +79,7 @@ namespace Api
             // prevent from mapping "sub" claim to nameidentifier.
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
 
-            var identityUrl = Configuration.GetValue<string>("IdentityUrl");
-
+           /*
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -91,6 +91,16 @@ namespace Api
                 options.RequireHttpsMetadata = false;
                 //options.Audience = "https://localhost:5001/resources";//"api1";
                 options.Audience = "api1";
+            });
+            */
+
+            services.AddAuthentication(OAuth2IntrospectionDefaults.AuthenticationScheme)
+            .AddOAuth2Introspection(options =>
+            {
+                options.Authority = "https://localhost:5001";
+
+                options.ClientId = "api1";
+                options.ClientSecret = "secret";
             });
         }
 
