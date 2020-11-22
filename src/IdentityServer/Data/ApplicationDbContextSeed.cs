@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Data
 {
-
-
     public class ApplicationDbContextSeed
     {
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher = new PasswordHasher<ApplicationUser>();
