@@ -55,6 +55,7 @@ namespace IdentityServer.Data
             {
                 Email = "demouser@microsoft.com",
                 Id = Guid.NewGuid().ToString(),
+                FirstName = "DemoFirstName",
                 LastName = "DemoLastName",
                 Name = "DemoUser",
                 PhoneNumber = "1234567890",
