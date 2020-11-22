@@ -76,10 +76,18 @@ namespace IdentityServer
                      options.EnableTokenCleanup = true;
                      options.TokenCleanupInterval = 3600; // interval in seconds (default is 3600)
                  });
-
-
-            // not recommended for production - you need to store your key material somewhere secure
-            builder.AddDeveloperSigningCredential();
+        
+            if (Environment.IsDevelopment())
+            {
+                builder.AddDeveloperSigningCredential();
+            }
+            else
+            {
+                //New-SelfsignedCertificate -KeyExportPolicy Exportable -Subject "CN=MyIdsvCertificate" 
+                //-KeySpec Signature -KeyAlgorithm RSA -KeyLength 2048 -HashAlgorithm SHA256 -CertStoreLocation "cert:\LocalMachine\My"
+                builder.AddSigningCredential("CN=MyIdsvCertificate");
+                     //.AddValidationKey("CN=lastKeyName");// add validation keys for rotation
+            }
         }
 
         public void Configure(IApplicationBuilder app)
