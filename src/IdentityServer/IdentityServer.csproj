@@ -22,5 +22,6 @@
   
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Migrations\ApplicationDb\" />
   </ItemGroup>
 </Project>
