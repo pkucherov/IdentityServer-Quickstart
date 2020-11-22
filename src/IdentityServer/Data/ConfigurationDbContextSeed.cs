@@ -41,6 +41,16 @@ namespace IdentityServer.Data
 
                 await context.SaveChangesAsync();
             }
+
+            if (!context.ApiScopes.Any())
+            {
+                foreach (var api in Config.ApiScopes)
+                {
+                    context.ApiScopes.Add(api.ToEntity());
+                }
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
