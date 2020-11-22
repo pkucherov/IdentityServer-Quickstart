@@ -12,14 +12,8 @@ namespace IdentityServer.Data
 {
     public class ConfigurationDbContextSeed
     {
-        public async Task SeedAsync(ConfigurationDbContext context,IConfiguration configuration)
+        public async Task SeedAsync(ConfigurationDbContext context)
         {
-           
-            //callbacks urls from config:
-            var clientUrls = new Dictionary<string, string>();
-
-            clientUrls.Add("ApiClient", configuration.GetValue<string>("ApiClient"));
-
             if (!context.Clients.Any())
             {
                 foreach (var client in Config.Clients)
