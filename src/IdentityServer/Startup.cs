@@ -30,24 +30,23 @@ namespace IdentityServer
         {
             const string connectionStringAppServices = @"UserID=postgres;Password=postgres;Host=localhost;Port=5432;Database=app_services;";
             // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options => 
+            services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseNpgsql(connectionStringAppServices,
-                sqlOptions =>
-                {
-                    sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
-                }
-                );
-                }
+                    sqlOptions =>
+                    {
+                        sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                    });
+            }
             );
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
-            const string connectionString = @"UserID=postgres;Password=postgres;Host=localhost;Port=5432;Database=pe_ident;";
+            const string connectionStringConfigureDb = @"UserID=postgres;Password=postgres;Host=localhost;Port=5432;Database=persisted_grant_db;";
 
-            const string connectionStringOperationalStore = @"UserID=postgres;Password=postgres;Host=localhost;Port=5432;Database=pe_ident;";
+            const string connectionStringOperationalStore = @"UserID=postgres;Password=postgres;Host=localhost;Port=5432;Database=configuration_db;";
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             var builder = services.AddIdentityServer(options =>
@@ -55,10 +54,10 @@ namespace IdentityServer
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 //options.EmitStaticAudienceClaim = true;
             })
-                //.AddInMemoryIdentityResources(Config.IdentityResources)
-                //.AddInMemoryApiScopes(Config.ApiScopes)
-                //.AddInMemoryApiResources(Config.GetApis())
-                //.AddInMemoryClients(Config.Clients)
+                 //.AddInMemoryIdentityResources(Config.IdentityResources)
+                 //.AddInMemoryApiScopes(Config.ApiScopes)
+                 //.AddInMemoryApiResources(Config.GetApis())
+                 //.AddInMemoryClients(Config.Clients)
                  //.AddTestUsers(Config.GetUsers())
                  .AddConfigurationStore(options => //ConfigurationDbContext
                  {
@@ -70,14 +69,14 @@ namespace IdentityServer
                  .AddOperationalStore(options =>  //PersistedGrantDbContext
                  {
                      options.ConfigureDbContext = builder =>
-                         builder.UseNpgsql(connectionString,
+                         builder.UseNpgsql(connectionStringConfigureDb,
                              sql => sql.MigrationsAssembly(migrationsAssembly));
 
                      // this enables automatic token cleanup. this is optional.
                      options.EnableTokenCleanup = true;
                      options.TokenCleanupInterval = 3600; // interval in seconds (default is 3600)
                  });
-            
+
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
@@ -93,7 +92,7 @@ namespace IdentityServer
             // uncomment if you want to add MVC
             //app.UseStaticFiles();
             //app.UseRouting();
-            
+
             app.UseIdentityServer();
 
             // uncomment, if you want to add MVC
