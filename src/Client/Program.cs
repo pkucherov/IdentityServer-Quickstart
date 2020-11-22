@@ -69,8 +69,8 @@ namespace Client
                 var tokenResponse2 = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
                 {
                     Address = disco.TokenEndpoint,
-                    Password = "password",
-                    UserName = "alice",
+                    Password = "Pass@word1",
+                    UserName = "demouser@microsoft.com",
                     Scope = "api1",
                     ClientId = "ro.client",
                     ClientSecret = "secret"
